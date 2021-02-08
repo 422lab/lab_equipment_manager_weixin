@@ -1,0 +1,69 @@
+/**index.wxss**/
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cover-image {
+  width: 200rpx;
+  height: 200rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.prompt-text-view {
+  margin-top: 50rpx;
+}
+
+.prompt-text {
+  color: #000;
+}
+
+.userid {
+  margin-top: 25rpx;
+}
+
+.userid-text {
+  color: #aaa;
+}
+
+.inputbox-view {
+  width: 300rpx;
+  margin-top: 75rpx;
+}
+
+.inputbox {
+  margin-top: 25rpx;
+  border-width: 1rpx 1rpx 1rpx 1rpx;
+  border-color: #aaa;
+  border-style: solid;
+  border-radius: 9rpx;
+}
+
+.submit-button-view {
+  margin-top: 60rpx;
+}
+
+.submit-button {
+  margin-left: 25rpx;
+  margin-right: 25rpx;
+}
+
+.option-button-view {
+  margin-top: 100rpx;
+}
+
+.option-button {
+  margin-left: 25rpx;
+  margin-right: 25rpx;
+}
+
+.info-text-view {
+  margin-top: 100rpx;
+}
+
+.info-text {
+  color: #aaa;
+}
