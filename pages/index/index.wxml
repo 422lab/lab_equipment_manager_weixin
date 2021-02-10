@@ -14,8 +14,8 @@
       <button class="option-button" bindtap="optionBtn">选项</button>
     </view>
     <view class="info-text-view">
-      <text class="info-text">最后签到时间: {{lastTime}}\n</text>
-      <text class="info-text">最后签到位置: {{lastLocation}}</text>
+      <text class="info-text">预约地点: {{resvLoc}}\n</text>
+      <text class="info-text">预约时间: {{resvTime}}</text>
     </view>
   </block>
   <block wx:elif="{{hasBound != null}}">

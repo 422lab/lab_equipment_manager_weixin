@@ -2,8 +2,6 @@
 
 import { str2ab } from '../../utils/util.js';
 
-const RX_FRAME_PRFX = 'FF55AA55AA';
-
 Page({
   data: {
     prompt: '正在加载数据，请稍候...',
@@ -13,8 +11,8 @@ Page({
     stuNum: null,
     stuNumIn: '',
     stuPwdIn: '',
-    lastTime: null,
-    lastLocation: null
+    resvLoc: null,
+    resvTime: null
   },
   // 点击头像事件
   coverTap() {
@@ -24,133 +22,13 @@ Page({
       return;
     }
 
-    wx.startHCE({
-      aid_list: [RX_FRAME_PRFX],
-      // 开启HCE成功
-      success(res) {
-        that.setData({
-          avaliable: true
-        });
-        // HCE消息回调
-        wx.onHCEMessage(function (res) {
-          if (res.messageType === 1 && that.data.userToken !== null) {
-            // 发送HCE消息
-            wx.sendHCEMessage({
-              data: str2ab(RX_FRAME_PRFX + that.data.userToken),
-              complete(res) {
-                console.log(res.errMsg);
-                wx.hideLoading({
-                  complete(res) {
-                    wx.showToast({
-                      title: '数据传输完成',
-                      icon: 'success',
-                      duration: 1500,
-                      mask: true
-                    });
-                    wx.stopHCE({
-                      complete(res) {
-                        console.log(res.errMsg);
-                        that.setData({
-                          avaliable: false,
-                          userToken: null
-                        });
-                      }
-                    });
-                  }
-                });
-              }
-            });
-          }
-        });
-      },
-      // 开启HCE失败
-      fail(res) {
-        wx.showModal({
-          title: '提示',
-          content: '请检查NFC开关是否打开',
-          showCancel: false
-        });
-      },
-      // 开启HCE完成
-      complete(res) {
-        console.log(res.errMsg);
+    wx.scanCode({
+      onlyFromCamera: true,
+      scanType: ['qrCode'],
+      complete (res) {
+        console.log(res)
       }
     });
-
-    setTimeout(function () {
-      if (that.data.avaliable && that.data.hasBound) {
-        wx.showLoading({
-          title: '正在获取密钥',
-          mask: true
-        });
-        // 获取验证口令
-        wx.request({
-          url: getApp().globalData.serverUrl,
-          method: 'POST',
-          data: {
-            request: getApp().globalData.reqCode.HTTP_REQ_CODE_APP_GET_TOKEN,
-            wx_code: getApp().globalData.userCode
-          },
-          header: {
-            'content-type': 'application/json'
-          },
-          // 获取验证口令成功
-          success(res) {
-            wx.hideLoading({
-              complete(res) { /* empty statement */ }
-            });
-            if (res.data.result === true) {
-              that.setData({
-                userToken: res.data.user_token
-              });
-              wx.showLoading({
-                title: '请刷考勤终端',
-                mask: true
-              });
-            } else if (res.data.result === false) {
-              wx.showToast({
-                title: res.data.errmsg,
-                icon: 'none',
-                duration: 2000,
-                mask: false
-              });
-            } else {
-              wx.showToast({
-                title: '系统维护中，请稍后再试',
-                icon: 'none',
-                duration: 2000,
-                mask: false
-              });
-            }
-          },
-          // 获取验证口令失败
-          fail(res) {
-            wx.hideLoading({
-              complete(res) { /* empty statement */ }
-            });
-            wx.showToast({
-              title: '网络故障',
-              icon: 'none',
-              duration: 2000,
-              mask: false
-            });
-            wx.stopHCE({
-              complete(res) {
-                console.log(res.errMsg);
-                that.setData({
-                  avaliable: false,
-                  userToken: null
-                });
-              }
-            });
-          },
-          // 获取验证口令完成
-          complete(res) {
-            console.log(res.errMsg);
-          }
-        });
-      }
-    }, 250);
   },
   // 学号输入事件
   stuNumInput(e) {
@@ -377,11 +255,11 @@ Page({
         success(res) {
           if (res.data.result === true) {
             that.setData({
-              prompt: '请点击上方NFC标志签到',
+              prompt: '请点击上方图标扫描二维码',
               hasBound: true,
               stuNum: res.data.user_id,
-              lastTime: res.data.last_time,
-              lastLocation: res.data.last_location
+              resvLoc: res.data.resv_loc,
+              resvTime: res.data.resv_time
             });
           } else if (res.data.result === false) {
             that.setData({
@@ -389,8 +267,8 @@ Page({
               userToken: null,
               hasBound: false,
               stuNum: '',
-              lastTime: null,
-              lastLocation: null
+              resvLoc: null,
+              resvTime: null
             });
           } else {
             that.setData({
@@ -398,8 +276,8 @@ Page({
               userToken: null,
               hasBound: null,
               stuNum: null,
-              lastTime: null,
-              lastLocation: null
+              resvLoc: null,
+              resvTime: null
             });
             wx.hideToast({
               complete(res) { /* empty statement */ }
