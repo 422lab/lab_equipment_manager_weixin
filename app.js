@@ -39,6 +39,6 @@ App({
       HTTP_REQ_CODE_APP_UPDATE_PSWD : 117   // 微信端请求修改密码
     },
     userCode: null,
-    serverUrl: 'https://server.zyiot.top/lem/'
+    serverUrl: 'https://zyiot.top/lem/'
   }
 });
